@@ -1,0 +1,38 @@
+<html>
+<!-- 
+Open this file in a browser to see it work. Powered by:
+1. st.js: for JSON transformation
+2. cell.js: for JSON to DOM https://github.com/intercellular/cell
+-->
+<script src="../../st.js"></script>
+<script src="https://www.celljs.org/cell.js"></script>
+<script>
+
+var rand = Math.random();
+var data = {
+  "rand": rand,
+  "items": [
+    { "text": "A", "color": "red" },
+    { "text": "B", "color": "blue" },
+    { "text": "C", "color": "gold" },
+    { "text": "D", "color": "purple" }
+  ]
+};
+
+// Create DOM using the generated Cell object
+var App = JSON.transform({
+  "$cell": true,
+  "$components": {
+    "{{#each items}}": {
+      "$text": "{{text}}",
+      "style": {
+        "color": "{{color}}",
+        "textAlign": "center",
+        "fontSize": "{{Math.floor(Math.random() * 300)+20}}px"
+      }
+    }
+  }
+}, data);
+
+</script>
+</html>

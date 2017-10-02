@@ -1,0 +1,28 @@
+{
+  "name": "stjs",
+  "version": "0.0.2",
+  "description": "Select and Transform any object",
+  "main": "st.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "eslint": "^4.7.1",
+    "json-stable-stringify": "^1.0.1",
+    "mocha": "^3.5.3"
+  },
+  "scripts": {
+    "test": "mocha --recursive test/unit/",
+    "lint": "eslint src/st.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SelectTransform/st.js.git"
+  },
+  "author": "gliechtenstein",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SelectTransform/st.js/issues"
+  },
+  "homepage": "https://github.com/SelectTransform/st.js#readme"
+}
