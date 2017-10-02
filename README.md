@@ -1,6 +1,10 @@
 # SM
 
-JSON Selector + Manipulator
+JSON Selector + Transformer
+
+[https://selecttransform.github.io/site](https://selecttransform.github.io/site)
+
+---
 
 ![preview](https://gliechtenstein.github.io/images/st.gif)
 
@@ -194,4 +198,4 @@ var parsed = JSON.select({ "items": [1,2,3,4] })
                 .root();
 ```
 
-# Learn more at [SelectTransform.github.io/site](https://selecttransform.github.io/ST)
+## Learn more at [SelectTransform.github.io/site](https://selecttransform.github.io/ST)
