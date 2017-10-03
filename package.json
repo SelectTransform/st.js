@@ -1,6 +1,6 @@
 {
   "name": "stjs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Select and Transform any object",
   "main": "st.js",
   "directories": {
