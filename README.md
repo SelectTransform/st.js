@@ -198,4 +198,4 @@ var parsed = JSON.select({ "items": [1,2,3,4] })
                 .root();
 ```
 
-## Learn more at [SelectTransform.github.io/site](https://selecttransform.github.io/ST)
+### Learn more at [selecttransform.github.io/site](https://selecttransform.github.io/site)
