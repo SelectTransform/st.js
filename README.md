@@ -2,7 +2,8 @@
 
 JSON Selector + Transformer
 
-[https://selecttransform.github.io/site](https://selecttransform.github.io/site)
+- Website: [https://selecttransform.github.io/site](https://selecttransform.github.io/site)
+- Twitter: [@selecttransform](https://www.twitter.com/selecttransform)
 
 ---
 
