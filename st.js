@@ -364,7 +364,6 @@
 
                   // both cases mean this key should be excluded
                 } else {
-                  console.log("filled");
                   // only include if the evaluation is truthy
                   result[key] = filled;
                 }
@@ -460,6 +459,7 @@
             func = Function('with(this) {return (' + slot + ')}').bind(data);
           }
           var evaluated = func();
+          delete data.$root;  // remove $root now that the parsing is over
           if (evaluated) {
             // In case of primitive types such as String, need to call valueOf() to get the actual value instead of the promoted object
             evaluated = evaluated.valueOf();
