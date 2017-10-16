@@ -273,7 +273,7 @@
         // ## Handling #include
         // This needs to precede everything else since it's meant to be overwritten
         // in case of collision
-        var include_object_re = /\{\{([ ]*#include)[ ]*(.*)\}\}/g;
+        var include_object_re = /\{\{([ ]*#include)[ ]*(.*)\}\}/;
         var include_keys = Object.keys(template).filter(function(key) { return include_object_re.test(key); });
         if (include_keys.length > 0) {
         // find the first key with #include
