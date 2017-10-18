@@ -22,7 +22,7 @@ Select a JSON object or its subtree that matches your criteria
 
 > Step 1. Take any JSON object
 
-```
+```js
 var data = {
   "links": [
     { "remote_url": "http://localhost" },
@@ -36,7 +36,7 @@ var data = {
 
 > Step 2. Find all key/value pairs that match a selector function
 
-```
+```js
 var sel = JSON.select(data, function(key, val) {
   return /https?:/.test(val);
 })
@@ -44,7 +44,7 @@ var sel = JSON.select(data, function(key, val) {
 
 > Step 3. Get the result
 
-```
+```js
 var keys = sel.keys();
 //  [
 //    "remote_url",
@@ -73,7 +73,7 @@ Use template to transform one object to another
 
 > Step 1. Take any JSON object
 
-```
+```js
 var data = {
   "title": "List of websites",
   "description": "This is a list of popular websites"
@@ -97,7 +97,7 @@ var data = {
 
 > Step 2. Select and transform with a template JSON object
 
-```
+```js
 var sel = JSON.select(data, function(key, val){
             return key === 'sites';
           })
@@ -114,7 +114,7 @@ var sel = JSON.select(data, function(key, val){
 
 > Step 3. Get the result
 
-```
+```js
 var keys = sel.keys();
 //  [
 //    "tag",
@@ -164,7 +164,7 @@ var root = sel.root();
 
 ## In a browser
 
-```
+```js
 <script src="st.js"></script>
 <script>
 var parsed = JSON.select({ "items": [1,2,3,4] })
@@ -181,13 +181,13 @@ var parsed = JSON.select({ "items": [1,2,3,4] })
 
 > Install through npm:
 
-```
+```bash
 $ npm install stjs
 ```
 
 > Use
 
-```
+```js
 require('st');
 
 var parsed = JSON.select({ "items": [1,2,3,4] })
