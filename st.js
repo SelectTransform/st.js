@@ -846,24 +846,26 @@
       return _stringify(val, replacer, spaces);
     }
   };
-  JSON.select = SELECT.select;
-  JSON.inject = SELECT.inject;
-  JSON.transform = TRANSFORM.transform;
 
   // Export
   if (typeof exports !== 'undefined') {
     var x = {
       TRANSFORM: TRANSFORM,
+      transform: TRANSFORM,
       SELECT: SELECT,
       Conditional: Conditional,
       Helper: Helper,
+      inject: SELECT.inject,
+      select: SELECT.select,
+      transform: TRANSFORM.transform,
     };
     if (typeof module !== 'undefined' && module.exports) { exports = module.exports = x; }
     exports = x;
   } else {
     $context.ST = {
-      select: SELECT,
-      transform: TRANSFORM,
+      select: SELECT.select,
+      inject: SELECT.inject,
+      transform: TRANSFORM.transform,
     };
   }
 }());
