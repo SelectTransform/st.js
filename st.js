@@ -321,7 +321,31 @@
                 if (newData && Helper.is_array(newData)) {
                   result = [];
                   for (var index = 0; index < newData.length; index++) {
+                    // temporarily set $index
+                    if(typeof newData[index] === 'object') {
+                      newData[index]["$index"] = index;
+                    } else {
+                      String.prototype.$index = index;
+                      Number.prototype.$index = index;
+                      Function.prototype.$index = index;
+                      Array.prototype.$index = index;
+                      Boolean.prototype.$index = index;
+                    }
+
+                    // run
                     var loop_item = TRANSFORM.run(template[key], newData[index]);
+
+                    // clean up $index
+                    if(typeof newData[index] === 'object') {
+                      delete newData[index]["$index"];
+                    } else {
+                      delete String.prototype.$index;
+                      delete Number.prototype.$index;
+                      delete Function.prototype.$index;
+                      delete Array.prototype.$index;
+                      delete Boolean.prototype.$index;
+                    }
+
                     if (loop_item) {
                       // only push when the result is not null
                       // null could mean #if clauses where nothing matched => In this case instead of rendering 'null', should just skip it completely
@@ -796,7 +820,7 @@
     if (!replacer) {
       return _stringify(val, function(key, val) {
         if (SELECT.$injected && SELECT.$injected.length > 0 && SELECT.$injected.indexOf(key) !== -1) { return undefined; }
-        if (key === '$root') {
+        if (key === '$root' || key === '$index') {
           return undefined;
         }
         if (typeof val === 'function') {

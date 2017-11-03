@@ -39,6 +39,84 @@ describe('#each', function(){
     var actual = st.TRANSFORM.run(template, data);
     compare(actual, template);
   });
+  describe('#each with index', function() {
+    it("primitive", function() {
+      var data = {"items": ["a", "b", "c"]}
+      var template = {
+        "{{#each items}}": {
+          "primitive": "{{this}}",
+          "index": "{{$index}}"
+        }
+      };
+      var actual = st.TRANSFORM.run(template, data);
+      compare(actual, [{"primitive": "a", "index": 0}, {"primitive": "b", "index": 1}, {"primitive": "c", "index": 2}]);
+    })
+    it("array", function() {
+      var data = {"items": [["a"], ["b"], ["c"]]}
+      var template = {
+        "{{#each items}}": {
+          "array": "{{this}}",
+          "index": "{{$index}}"
+        }
+      };
+      var actual = st.TRANSFORM.run(template, data);
+      compare(actual, [{"array": ["a"], "index": 0}, {"array": ["b"], "index": 1}, {"array": ["c"], "index": 2}]);
+    })
+    it("object", function() {
+      var data = {"items": [{name: "kate", age: "23"}, {name: "Lassie", age: "3"}]};
+      var template = {
+        "{{#each items}}": {
+          "title": "{{name}}",
+          "subtitle": "{{age}}",
+          "index": "{{$index}}"
+        }
+      };
+      var actual = st.TRANSFORM.run(template, data);
+      compare(actual, [{"title": "kate", "subtitle": "23", "index": 0}, {"title": "Lassie", "subtitle": "3", "index": 1}]);
+    })
+    it("nested array", function() {
+      var data = {"items": [["a1", "a2", "a3"], ["b1", "b2", "b3"], ["c1", "c2", "c3"]]}
+      var template = {
+        "{{#each items}}": {
+          "index": "{{$index}}",
+          "items": {
+            "{{#each this}}": {
+              "item": "{{this}}",
+              "index": "{{$index}}"
+            }
+          }
+        }
+      };
+      var actual = st.TRANSFORM.run(template, data);
+      var expected = [
+        {
+          "index": 0,
+          "items": [
+            { "item": "a1", "index": 0 },
+            { "item": "a2", "index": 1 },
+            { "item": "a3", "index": 2 }
+          ]
+        },
+        {
+          "index": 1,
+          "items": [
+            { "item": "b1", "index": 0 },
+            { "item": "b2", "index": 1 },
+            { "item": "b3", "index": 2 }
+          ]
+        },
+        {
+          "index": 2,
+          "items": [
+            { "item": "c1", "index": 0 },
+            { "item": "c2", "index": 1 },
+            { "item": "c3", "index": 2 }
+          ]
+        }
+      ];
+      compare(actual, expected);
+    })
+  });
   /*
   it('#each with $index', function() {
     var data = {"items": ['a','b','c','d']};
