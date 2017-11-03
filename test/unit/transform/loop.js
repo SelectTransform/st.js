@@ -116,6 +116,44 @@ describe('#each', function(){
       ];
       compare(actual, expected);
     })
+    it('use with #merge', function() {
+      var template = {
+        "users": {
+          "{{#each $root.$get.users}}": {
+            "{{#merge}}": [
+              "{{this}}",
+              { "balance": "{{$root.$jason[$index]}}" , "index": "{{$index}}" }
+            ]
+          }
+        }
+      };
+      var data = {
+        "$get": {
+          "users": [{
+            "id": "0xdef",
+            "username": "Alice"
+          }, {
+            "id": "0xabc",
+            "username": "Bob"
+          }]
+        },
+        "$jason": [100, 58]
+      }
+      var actual = st.TRANSFORM.transform(template, data);
+      compare(actual, {
+        "users": [{
+          "id": "0xdef",
+          "username": "Alice",
+          "balance": 100,
+          "index": 0
+        }, {
+          "id": "0xabc",
+          "username": "Bob",
+          "balance": 58,
+          "index": 1
+        }]
+      })
+    });
   });
   /*
   it('#each with $index', function() {

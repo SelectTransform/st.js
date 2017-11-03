@@ -312,6 +312,19 @@
                       result[key] = res[key];
                     }
                   });
+                  // clean up $index from the result
+                  // necessary because #merge merges multiple objects into one,
+                  // and one of them may be 'this', in which case the $index attribute
+                  // will have snuck into the final result
+                  if(typeof data === 'object') {
+                    delete result["$index"];
+                  } else {
+                    delete String.prototype.$index;
+                    delete Number.prototype.$index;
+                    delete Function.prototype.$index;
+                    delete Array.prototype.$index;
+                    delete Boolean.prototype.$index;
+                  }
                 }
               } else if (fun.name === '#each') {
                 // newData will be filled with parsed results
