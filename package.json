@@ -1,7 +1,7 @@
 {
   "name": "stjs",
-  "version": "0.0.3",
-  "description": "Select and Transform any object",
+  "version": "0.0.4",
+  "description": "JSON Template over JSON",
   "main": "st.js",
   "directories": {
     "test": "test"
