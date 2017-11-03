@@ -713,6 +713,11 @@
         // apply the result to root
         SELECT.$selected_root = Helper.resolve(SELECT.$selected_root, '', parsed_object);
       }
+      delete String.prototype.$root;
+      delete Number.prototype.$root;
+      delete Function.prototype.$root;
+      delete Array.prototype.$root;
+      delete Boolean.prototype.$root;
       return SELECT;
     },
     transform: function(obj, serialized) {
@@ -767,6 +772,11 @@
         SELECT.$template_root = Helper.resolve(SELECT.$template_root, '', parsed_object);
         SELECT.$selected_root = SELECT.$template_root;
       }
+      delete String.prototype.$root;
+      delete Number.prototype.$root;
+      delete Function.prototype.$root;
+      delete Array.prototype.$root;
+      delete Boolean.prototype.$root;
       return SELECT;
     },
 
