@@ -607,13 +607,8 @@
         if (serialized) SELECT.$injected = JSON.parse(obj);
       } catch (error) { }
 
-      if (SELECT.$injected.length > 0) {
-        // inject variables from 'this' context by name
-        SELECT.$injected.forEach(function(key) {
-          var o = {};
-          o[key] = $context[key];
-          SELECT.select(o);
-        });
+      if (Object.keys(SELECT.$injected).length > 0) {
+        SELECT.select(SELECT.$injected);
       }
       return SELECT;
     },

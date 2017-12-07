@@ -8,8 +8,10 @@
   },
   "devDependencies": {
     "eslint": "^4.7.1",
+    "he": "^1.1.1",
     "json-stable-stringify": "^1.0.1",
-    "mocha": "^3.5.3"
+    "mocha": "^3.5.3",
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "test": "mocha --recursive test/unit/",
