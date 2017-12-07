@@ -302,6 +302,14 @@
                     var res = TRANSFORM.run(concat_item, data);
                     result = result.concat(res);
                   });
+
+                  if (/\{\{(.*?)\}\}/.test(JSON.stringify(result))) {
+                    // concat should only trigger if all of its children
+                    // have successfully parsed.
+                    // so check for any template expression in the end result
+                    // and if there is one, revert to the original template
+                    result = template;
+                  }
                 }
               } else if (fun.name === '#merge') {
                 if (Helper.is_array(template[key])) {
