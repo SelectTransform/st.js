@@ -1,6 +1,6 @@
 {
   "name": "stjs",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "JSON Template over JSON",
   "main": "st.js",
   "directories": {
