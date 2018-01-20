@@ -14,6 +14,29 @@ var compare = function(actual, expected){
 // #concat [[a,b],[c,d]]= [a,b,c,d]
 
 describe('concat', function(){
+  it('concat should only trigger if all of its children successfully parses', function() {
+    var data = {
+      numbers: [1,2,3,4,5]
+    }
+    var template = {
+      "items": {
+        "{{#concat}}": [
+          {
+            "type": "label",
+            "text": "header"
+          },
+          {
+            "{{#each numbers}}": {
+              "type": "label",
+              "text": "{{item}}"
+            }
+          }
+        ]
+      }
+    }
+    var actual = st.TRANSFORM.transform(template, data);
+    compare(actual, template);
+  })
   it('item + array', function() { 
     var data = {
       numbers: [1,2,3,4,5]

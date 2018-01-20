@@ -1,5 +1,5 @@
 var assert = require('assert');
-var st = require('../../../st.js');
+var ST = require('../../../st.js');
 var stringify = require('json-stable-stringify');
 var compare = function(actual, expected){
   assert.equal(stringify(actual), stringify(expected));
@@ -15,7 +15,7 @@ describe('#?', function() {
       one: 1,
       two: 3
     }
-    var actual = JSON.transform(template, data);
+    var actual = ST.transform(template, data);
     var expected = {
       "test1": 1
     }
@@ -29,7 +29,7 @@ describe('#?', function() {
     var data = {
       test1: "1" 
     }
-    var actual = JSON.transform(template, data);
+    var actual = ST.transform(template, data);
     var expected = {
       "test1": "1"
     }
@@ -53,7 +53,7 @@ describe('#?', function() {
         badge: "{{notification.invite}}"
       }]
     }
-    var actual = JSON.transform(template, data);
+    var actual = ST.transform(template, data);
     var expected = {
       tabs: [{
         text: "home",
