@@ -1,7 +1,6 @@
 (function() {
   var $context = this;
   var root; // root context
-  var _stringify;
   var Helper = {
     is_template: function(str) {
       var re = /\{\{(.+)\}\}/g;
@@ -671,7 +670,6 @@
     },
     // returns the object itself
     select: function(obj, filter, serialized) {
-      JSON.stringify = overriddenStringify;
       // iterate '$selected'
       //
       /*
@@ -843,7 +841,6 @@
 
     // Terminal methods
     objects: function() {
-      JSON.stringify = _stringify;
       SELECT.$progress = null;
       if (SELECT.$selected) {
         return SELECT.$selected.map(function(item) { return item.object; });
@@ -852,7 +849,6 @@
       }
     },
     keys: function() {
-      JSON.stringify = _stringify;
       SELECT.$progress = null;
       if (SELECT.$selected) {
         return SELECT.$selected.map(function(item) { return item.key; });
@@ -865,7 +861,6 @@
       }
     },
     paths: function() {
-      JSON.stringify = _stringify;
       SELECT.$progress = null;
       if (SELECT.$selected) {
         return SELECT.$selected.map(function(item) { return item.path; });
@@ -884,7 +879,6 @@
       }
     },
     values: function() {
-      JSON.stringify = _stringify;
       SELECT.$progress = null;
       if (SELECT.$selected) {
         return SELECT.$selected.map(function(item) { return item.value; });
@@ -893,15 +887,14 @@
       }
     },
     root: function() {
-      JSON.stringify = _stringify;
       SELECT.$progress = null;
       return SELECT.$selected_root;
     },
   };
 
   // Native JSON object override
-  _stringify = JSON.stringify;
-  var overriddenStringify = function(val, replacer, spaces) {
+  var _stringify = JSON.stringify;
+  JSON.stringify = function(val, replacer, spaces) {
     var t = typeof val;
     if (['number', 'string', 'boolean'].indexOf(t) !== -1) {
       return _stringify(val, replacer, spaces);
