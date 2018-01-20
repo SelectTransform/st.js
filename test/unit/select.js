@@ -1,5 +1,5 @@
 var assert = require('assert');
-var st = require('../../st.js');
+var ST = require('../../st.js');
 var stringify = require('json-stable-stringify');
 var compare = function(actual, expected){
   assert.equal(stringify(actual), stringify(expected));
@@ -44,12 +44,12 @@ describe('SELECT object', function(){
     describe('root', function() {
       it('simple object', function(){
         var template = {"head": {"title": "hi"}, "body": {}};
-        var actual = st.SELECT.select(template);    
+        var actual = ST.SELECT.select(template);    
         compare(actual.values(), [{"title": "hi"}, {}]);
         compare(actual.root(), {"head": {"title": "hi"}, "body": {}});
       });
       it('nested object', function() {
-        var selected = st.SELECT.select(data);
+        var selected = ST.SELECT.select(data);
         compare(selected.objects(), [data]);
         compare(selected.keys(), ["items"]);
         compare(selected.values(), [data.items]);
@@ -57,7 +57,7 @@ describe('SELECT object', function(){
       })
       describe('select root and parse', function() {
         it('parse', function() {
-          var generated = st.SELECT.select(template).transform(data);
+          var generated = ST.SELECT.select(template).transform(data);
           compare(generated.objects(), [[{
             "type": "image",
             "haschildren": false
@@ -83,7 +83,7 @@ describe('SELECT object', function(){
           }]);
         })
         it('transformWith', function() {
-          var generated = st.SELECT.select(data).transformWith(template);
+          var generated = ST.SELECT.select(data).transformWith(template);
           // same as above example
           compare(generated.objects(), [[{
             "type": "image",
@@ -132,7 +132,7 @@ describe('SELECT object', function(){
 
         it('returns a selected formatted object', function(){
           var template = {"head": {"title": "hi"}, "body": {}};
-          var actual = st.SELECT.select(template, function(item){
+          var actual = ST.SELECT.select(template, function(item){
             return /tle/.test(item);
           });
           compare(actual.values(), ["hi"]);
@@ -143,7 +143,7 @@ describe('SELECT object', function(){
         });
         it('select by key', function() {
           console.log("#####################33 Data = ", data, "\n");
-          var selected = st.SELECT.select(data, function(key, val) {
+          var selected = ST.SELECT.select(data, function(key, val) {
             return key === 'url';
           });
           console.log("#selected root = ", selected.$selected_root);
@@ -165,7 +165,7 @@ describe('SELECT object', function(){
           */
         })
         it('select by value', function() {
-          var selected = st.SELECT.select(data, function(key, val) {
+          var selected = ST.SELECT.select(data, function(key, val) {
             return /https?:/.test(val);
           });
           console.log("objects = ", selected.objects());
@@ -208,7 +208,7 @@ describe('SELECT object', function(){
               }]
             }]
           };
-          var selectedData = st.SELECT.select(data, function(key, val) {
+          var selectedData = ST.SELECT.select(data, function(key, val) {
             return key === 'type';
           }).objects();
           compare(selectedData, [{
@@ -247,7 +247,7 @@ describe('SELECT object', function(){
 
 
 
-          var selectedTemplate = st.SELECT.select(template, function(key, val) {
+          var selectedTemplate = ST.SELECT.select(template, function(key, val) {
             return /#each/.test(key);
           });
           compare(selectedTemplate.objects(), [{
@@ -308,7 +308,7 @@ describe('SELECT object', function(){
                 }]
               }]
             };
-            var selected = st.SELECT.select(data, function(key, val) {
+            var selected = ST.SELECT.select(data, function(key, val) {
               return /https?:/.test(val);
             });
             var generated = selected.transformWith(template2);
@@ -330,11 +330,11 @@ describe('SELECT object', function(){
             compare(generated.paths(), ["[\"items\"][0]", "[\"items\"][1][\"components\"][0]", "[\"items\"][1][\"components\"][1][\"components\"][1]"]);
           })
           it('twice', function() {
-            var labelParsed = st.SELECT.select(data, function(key, val) {
+            var labelParsed = ST.SELECT.select(data, function(key, val) {
               return val === 'label';
             }).transformWith(template3).root();
 
-            var generated = st.SELECT.select(labelParsed, function(key, val) {
+            var generated = ST.SELECT.select(labelParsed, function(key, val) {
               return /https?:/.test(val)
             }).transformWith(template2);
             console.log("objects = ", generated.objects());
@@ -361,7 +361,7 @@ describe('SELECT object', function(){
               }
             }
           };
-          var actual = st.SELECT.select(template, function(key){
+          var actual = ST.SELECT.select(template, function(key){
             return key == 'head';
           });
           var expected = [{
@@ -416,7 +416,7 @@ describe('SELECT object', function(){
               }
             }
           };
-          var actual = st.SELECT.select(template, function(key, value){
+          var actual = ST.SELECT.select(template, function(key, value){
             return /#include/.test(key);
           });
           var expected = {
@@ -535,7 +535,7 @@ describe('SELECT object', function(){
               }
             }
           };
-          var actual = st.SELECT.select(template, function(key, value){
+          var actual = ST.SELECT.select(template, function(key, value){
             return /#include/.test(key);
           }).transform({}).root();
           var expected = {
@@ -595,7 +595,7 @@ describe('SELECT object', function(){
             }]
           }
         };
-        var actual = st.SELECT.select(data, function(key, value){
+        var actual = ST.SELECT.select(data, function(key, value){
           return /http:/.test(value);
         });
         var expected = {
@@ -650,7 +650,7 @@ describe('SELECT object', function(){
             }]
           }
         };
-        var actual = st.SELECT.select(data, function(key, value){
+        var actual = ST.SELECT.select(data, function(key, value){
           return key=='type' && value=='label';
         });
         var expected = {
@@ -715,7 +715,7 @@ describe('SELECT object', function(){
             "content": "Quack"
           }]
         };
-        var actual = st.SELECT.select(template, function(key, value){
+        var actual = ST.SELECT.select(template, function(key, value){
           return /#each/.test(key);
         }).transform(data).root();
         console.log("Actual = ", actual);
@@ -763,7 +763,7 @@ describe('SELECT object', function(){
         compare(actual, expected);
 
 /*
-        var actual2 = st.include(template, data);
+        var actual2 = ST.include(template, data);
         compare(actual2, expected);
         */
 
@@ -790,7 +790,7 @@ describe('SELECT object', function(){
             }
           }
         };
-        var actual = st.TRANSFORM.transform(template, data);
+        var actual = ST.TRANSFORM.transform(template, data);
         var expected = {
 					"{{#each $jason}}": {
             "type": "vertical",
@@ -823,7 +823,7 @@ describe('SELECT object', function(){
           }]
         };
         var expected = {"items": ["horizontal", "vertical"]};
-        var actual = st.SELECT.select(template).transform(data).root();
+        var actual = ST.SELECT.select(template).transform(data).root();
         compare(actual, expected);
       });
       it('selective parsing - only parse {{content}}', function(){
@@ -865,7 +865,7 @@ describe('SELECT object', function(){
             "content": "Quack"
           }]
         };
-        var actual = st.SELECT.select(template, function(key, value){
+        var actual = ST.SELECT.select(template, function(key, value){
           return /\$root/.test(value);
         }).transform(data).root();
 
@@ -900,7 +900,7 @@ describe('SELECT object', function(){
         compare(actual, expected);
 
 /*
-        var actual2 = st.include(template, data);
+        var actual2 = ST.include(template, data);
         compare(actual2, expected);
         */
       })
@@ -924,7 +924,7 @@ describe('SELECT object', function(){
           }]
         }
       };
-      var parsed = JSON.select(data, function(key, val) {
+      var parsed = ST.select(data, function(key, val) {
         return key === 'url';
       }).transformWith({
         tag: "<a href='{{url}}'>{{text}}</a>"
@@ -948,7 +948,7 @@ describe('SELECT object', function(){
           }
         }
       };
-      var selected = JSON.select(template, function(key, val) {
+      var selected = ST.select(template, function(key, val) {
         return key === 'type';
       });
 
@@ -983,7 +983,7 @@ describe('SELECT object', function(){
         metadata: "This is a link collection"
       };
 
-      var selection = JSON.select(data, function(key, val) {
+      var selection = ST.select(data, function(key, val) {
         return /https?:/.test(val);
       })
 
