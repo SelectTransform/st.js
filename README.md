@@ -188,7 +188,7 @@ $ npm install stjs
 > Use
 
 ```js
-const ST = require('st');
+const ST = require('stjs');
 
 const parsed = ST.select({ "items": [1,2,3,4] })
                 .transformWith({
