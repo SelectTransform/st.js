@@ -319,9 +319,17 @@
                 
                 ///////////////////////////////
                 /// Modified by Jakub Mifek ///
-                ///////////////////////////////  
+                ///////////////////////////////
+              } else if (fun.name === '#optional') {
+                let ret = TRANSFORM.run(template[key], data);
+
+                if(!ret || ret == null || ret == undefined || typeof ret === 'object' && Object.keys(ret).length === 0 || Helper.is_array(ret) && ret.length === 0) {
+                  // We want to ignore these cases
+                } else {
+                  result[fun.expression] = ret;
+                }
               } else if (fun.name === '#flatten') {
-                  let arr = TRANSFORM.run(template[key], data);
+                let arr = TRANSFORM.run(template[key], data);
                   result = [];
 
                   if(Helper.is_array(arr)) {
