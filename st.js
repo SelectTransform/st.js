@@ -447,12 +447,15 @@
                 // Ideally newData should be an array since it was prefixed by #each
                 if (newData && Helper.is_array(newData)) {
                   result = [];
+                  let originals = {}; // Modified by Jakub Mifek
                   for (var index = 0; index < newData.length; index++) {
                     // temporarily set $index
                     if (typeof newData[index] === 'object') {
                       newData[index]["$index"] = index;
                       // #let handling
+                      
                       for (var declared_vars in TRANSFORM.memory) {
+                        originals[declared_vars] = newData[index][declared_vars]; // Modified by Jakub Mifek
                         newData[index][declared_vars] = TRANSFORM.memory[declared_vars];
                       }
                     } else {
@@ -478,8 +481,11 @@
                     if (typeof newData[index] === 'object') {
                       delete newData[index]["$index"];
                       // #let handling
-                      for (var declared_vars in TRANSFORM.memory) {
-                        delete newData[index][declared_vars];
+                      for (var declared_vars in TRANSFORM.memory) { // Modified by Jakub Mifek
+                        if(originals[declared_vars])
+                          newData[index][declared_vars] = originals[declared_vars];
+                        else
+                          delete newData[index][declared_vars];
                       }
                     } else {
                       delete String.prototype.$index;
