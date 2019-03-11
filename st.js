@@ -449,9 +449,10 @@
                   result = [];
                   let originals = {}; // Modified by Jakub Mifek
                   for (var index = 0; index < newData.length; index++) {
-                    // temporarily set $index
+                    // temporarily set $index and $this
                     if (typeof newData[index] === 'object') {
                       newData[index]["$index"] = index;
+											newData[index]["$this"] = newData[index];
                       // #let handling
                       
                       for (var declared_vars in TRANSFORM.memory) {
@@ -477,9 +478,10 @@
                     // run
                     var loop_item = TRANSFORM.run(template[key], newData[index]);
 
-                    // clean up $index
+                    // clean up $index and $this
                     if (typeof newData[index] === 'object') {
                       delete newData[index]["$index"];
+											delete newData[index]["$this"];
                       // #let handling
                       for (var declared_vars in TRANSFORM.memory) { // Modified by Jakub Mifek
                         if(originals[declared_vars])
