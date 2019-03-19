@@ -319,9 +319,17 @@
                 
                 ///////////////////////////////
                 /// Modified by Jakub Mifek ///
-                ///////////////////////////////  
+                ///////////////////////////////
+              } else if (fun.name === '#optional') {
+                let ret = TRANSFORM.run(template[key], data);
+
+                if(!ret || ret == null || ret == undefined || typeof ret === 'object' && Object.keys(ret).length === 0 || Helper.is_array(ret) && ret.length === 0) {
+                  // We want to ignore these cases
+                } else {
+                  result[fun.expression] = ret;
+                }
               } else if (fun.name === '#flatten') {
-                  let arr = TRANSFORM.run(template[key], data);
+                let arr = TRANSFORM.run(template[key], data);
                   result = [];
 
                   if(Helper.is_array(arr)) {
@@ -487,12 +495,16 @@
                 // Ideally newData should be an array since it was prefixed by #each
                 if (newData && Helper.is_array(newData)) {
                   result = [];
+                  let originals = {}; // Modified by Jakub Mifek
                   for (var index = 0; index < newData.length; index++) {
-                    // temporarily set $index
+                    // temporarily set $index and $this
                     if (typeof newData[index] === 'object') {
                       newData[index]["$index"] = index;
+											newData[index]["$this"] = newData[index];
                       // #let handling
+                      
                       for (var declared_vars in TRANSFORM.memory) {
+                        originals[declared_vars] = newData[index][declared_vars]; // Modified by Jakub Mifek
                         newData[index][declared_vars] = TRANSFORM.memory[declared_vars];
                       }
                     } else {
@@ -514,12 +526,16 @@
                     // run
                     var loop_item = TRANSFORM.run(template[key], newData[index]);
 
-                    // clean up $index
+                    // clean up $index and $this
                     if (typeof newData[index] === 'object') {
                       delete newData[index]["$index"];
+											delete newData[index]["$this"];
                       // #let handling
-                      for (var declared_vars in TRANSFORM.memory) {
-                        delete newData[index][declared_vars];
+                      for (var declared_vars in TRANSFORM.memory) { // Modified by Jakub Mifek
+                        if(originals[declared_vars])
+                          newData[index][declared_vars] = originals[declared_vars];
+                        else
+                          delete newData[index][declared_vars];
                       }
                     } else {
                       delete String.prototype.$index;
