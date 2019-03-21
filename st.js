@@ -368,7 +368,10 @@
                   }
 
                   // 3. Pass it into TRANSFORM.run
-                  result = TRANSFORM.run(real_template, data);
+                  var exp = TRANSFORM.run(real_template, data);
+                  for (var e in exp) {
+                      result[e] = exp[e];
+                  }
 
                   // 4. Remove the data from memory
                   for (var parsed_key in parsed_keys) {
@@ -386,6 +389,51 @@
                   ///////////////////////////
                   /// End of modification ///
                   ///////////////////////////
+                }
+              } else if (fun.name === '#let*') {
+                if (Helper.is_array(template[key]) && template[key].length == 2) {
+                  var defs = template[key][0];
+                  var real_template = template[key][1];
+
+                  // 1. Parse the first item to assign variables
+                  var parsed_keys = {};
+                  let originals = {};
+                  let moriginals = {};
+                  for (var def in defs) {
+                      var dd = {};
+                      dd[def] = defs[def]
+                      var x = TRANSFORM.run(dd, data);
+                      parsed_keys[def] = x[def];
+                      originals[def] = data[def];
+                      data[def] = parsed_keys[def];
+                  }
+
+                  // 2. modify the data
+                  for (var parsed_key in parsed_keys) {
+                    moriginals[parsed_key] = TRANSFORM.memory[parsed_key];
+                    TRANSFORM.memory[parsed_key] = parsed_keys[parsed_key];
+                    originals[parsed_key] = data[parsed_key];
+                    data[parsed_key] = parsed_keys[parsed_key];
+                  }
+
+                  // 3. Pass it into TRANSFORM.run
+                  var exp = TRANSFORM.run(real_template, data);
+                  for (var e in exp) {
+                      result[e] = exp[e];
+                  }
+                  
+                  // 4. Remove the data from memory
+                  for (var parsed_key in parsed_keys) {
+                    if (moriginals[parsed_key])
+                      TRANSFORM.memory[parsed_key] = moriginals[parsed_key];
+                    else
+                      delete TRANSFORM.memory[parsed_key];
+
+                    if (originals[parsed_key])
+                      data[parsed_key] = originals[parsed_key];
+                    else
+                      delete data[parsed_key];
+                  }
                 }
               } else if (fun.name === '#concat') {
                 if (Helper.is_array(template[key])) {
