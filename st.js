@@ -1,6 +1,7 @@
 (function() {
   var $context = this;
   var root; // root context
+  var injection; // MODIFIED: Added injection context
   var Helper = {
     is_template: function(str) {
       var re = /\{\{(.+)\}\}/g;
@@ -546,6 +547,7 @@
           var data_type = typeof data;
           if (['number', 'string', 'array', 'boolean', 'function'].indexOf(data_type === -1)) {
             data.$root = root;
+            data.$fn = injection; // MODIFIED: Attach the injected functions too
           }
           // If the pattern ends with a return statement, but is NOT wrapped inside another function ([^}]*$), it's a function expression
           var match = /function\([ ]*\)[ ]*\{(.*)\}[ ]*$/g.exec(slot);
@@ -561,6 +563,7 @@
           }
           var evaluated = func();
           delete data.$root;  // remove $root now that the parsing is over
+          delete data.$fn; // MODIFIED: remove the injected functions from node
           if (evaluated) {
             // In case of primitive types such as String, need to call valueOf() to get the actual value instead of the promoted object
             evaluated = evaluated.valueOf();
@@ -615,7 +618,10 @@
         //    2. for case2, it's better to just return the template so it's easier to debug
         return template;
       } catch (err) {
-        return template;
+        //return template;
+        // MODIFIED: Added error source and rethrow of the error
+        err.source = slot;
+        throw err;
       }
     },
   };
