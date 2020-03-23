@@ -1,12 +1,12 @@
-(function () {
+(function() {
   var $context = this;
   var root; // root context
   var Helper = {
-    is_template: function (str) {
+    is_template: function(str) {
       var re = /\{\{(.+)\}\}/g;
       return re.test(str);
     },
-    is_array: function (item) {
+    is_array: function(item) {
       return (
         Array.isArray(item) ||
         (!!item &&
@@ -15,7 +15,7 @@
         )
       );
     },
-    resolve: function (o, path, new_val) {
+    resolve: function(o, path, new_val) {
       // 1. Takes any object
       // 2. Finds subtree based on path
       // 3. Sets the value to new_val
@@ -30,7 +30,7 @@
     },
   };
   var Conditional = {
-    run: function (template, data) {
+    run: function(template, data) {
       // expecting template as an array of objects,
       // each of which contains '#if', '#elseif', 'else' as key
 
@@ -74,7 +74,7 @@
       // so return null
       return null;
     },
-    is: function (template) {
+    is: function(template) {
       // TRUE ONLY IF it's in a correct format.
       // Otherwise return the original template
       // Condition 0. Must be an array
@@ -140,7 +140,7 @@
       // Condition 4.
       // in case there's more than two items, everything between the first and the last item should be #elseif
       var they_are_all_elseifs = true;
-      for (var template_index = 1; template_index < template.length - 1; template_index++) {
+      for (var template_index = 1; template_index < template.length-1; template_index++) {
         var template_item = template[template_index];
         for (var template_key in template_item) {
           func = TRANSFORM.tokenize(template_key);
@@ -160,7 +160,7 @@
       // Now we need to check the validity of the last item
       // Condition 5.
       // in case there's more than one item, it should end with #else or #elseif
-      var last = template[template.length - 1];
+      var last = template[template.length-1];
       for (var last_key in last) {
         func = TRANSFORM.tokenize(last_key);
         if (['#else', '#elseif'].indexOf(func.name.toLowerCase()) === -1) {
@@ -173,10 +173,10 @@
   };
   var TRANSFORM = {
     memory: {},
-    transform: function (template, data, injection, serialized) {
+    transform: function(template, data, injection, serialized) {
       var selector = null;
       if (/#include/.test(JSON.stringify(template))) {
-        selector = function (key, value) { return /#include/.test(key) || /#include/.test(value); };
+        selector = function(key, value) { return /#include/.test(key) || /#include/.test(value); };
       }
       var res;
       if (injection) {
@@ -203,7 +203,7 @@
         return res;
       }
     },
-    tokenize: function (str) {
+    tokenize: function(str) {
       // INPUT : string
       // OUTPUT : {name: FUNCTION_NAME:STRING, args: ARGUMENT:ARRAY}
       var re = /\{\{(.+)\}\}/g;
@@ -228,7 +228,7 @@
       }
       return null;
     },
-    run: function (template, data) {
+    run: function(template, data) {
       var result;
       var fun;
       if (typeof template === 'string') {
@@ -275,9 +275,9 @@
         // This needs to precede everything else since it's meant to be overwritten
         // in case of collision
         var include_object_re = /\{\{([ ]*#include)[ ]*(.*)\}\}/;
-        var include_keys = Object.keys(template).filter(function (key) { return include_object_re.test(key); });
+        var include_keys = Object.keys(template).filter(function(key) { return include_object_re.test(key); });
         if (include_keys.length > 0) {
-          // find the first key with #include
+        // find the first key with #include
           fun = TRANSFORM.tokenize(include_keys[0]);
           if (fun.expression) {
             // if #include has arguments, evaluate it before attaching
@@ -305,7 +305,7 @@
                   var parsed_keys = TRANSFORM.run(defs, data);
 
                   // 2. modify the data
-                  for (var parsed_key in parsed_keys) {
+                  for(var parsed_key in parsed_keys) {
                     TRANSFORM.memory[parsed_key] = parsed_keys[parsed_key];
                     data[parsed_key] = parsed_keys[parsed_key];
                   }
@@ -316,7 +316,7 @@
               } else if (fun.name === '#concat') {
                 if (Helper.is_array(template[key])) {
                   result = [];
-                  template[key].forEach(function (concat_item) {
+                  template[key].forEach(function(concat_item) {
                     var res = TRANSFORM.run(concat_item, data);
                     result = result.concat(res);
                   });
@@ -332,7 +332,7 @@
               } else if (fun.name === '#merge') {
                 if (Helper.is_array(template[key])) {
                   result = {};
-                  template[key].forEach(function (merge_item) {
+                  template[key].forEach(function(merge_item) {
                     var res = TRANSFORM.run(merge_item, data);
                     for (var key in res) {
                       result[key] = res[key];
@@ -342,7 +342,7 @@
                   // necessary because #merge merges multiple objects into one,
                   // and one of them may be 'this', in which case the $index attribute
                   // will have snuck into the final result
-                  if (typeof data === 'object') {
+                  if(typeof data === 'object') {
                     delete result["$index"];
 
                     // #let handling
@@ -375,7 +375,7 @@
                   result = [];
                   for (var index = 0; index < newData.length; index++) {
                     // temporarily set $index
-                    if (typeof newData[index] === 'object') {
+                    if(typeof newData[index] === 'object') {
                       newData[index]["$index"] = index;
                       // #let handling
                       for (var declared_vars in TRANSFORM.memory) {
@@ -401,7 +401,7 @@
                     var loop_item = TRANSFORM.run(template[key], newData[index]);
 
                     // clean up $index
-                    if (typeof newData[index] === 'object') {
+                    if(typeof newData[index] === 'object') {
                       delete newData[index]["$index"];
                       // #let handling
                       for (var declared_vars in TRANSFORM.memory) {
@@ -487,7 +487,7 @@
       }
       return result;
     },
-    fillout: function (data, template, raw) {
+    fillout: function(data, template, raw) {
       // 1. fill out if possible
       // 2. otherwise return the original
       var replaced = template;
@@ -528,7 +528,7 @@
       }
       return replaced;
     },
-    _fillout: function (options) {
+    _fillout: function(options) {
       // Given a template and fill it out with passed slot and its corresponding data
       var re = /\{\{(.*?)\}\}/g;
       var full_re = /^\{\{((?!\}\}).)*\}\}$/;
@@ -550,19 +550,16 @@
           // If the pattern ends with a return statement, but is NOT wrapped inside another function ([^}]*$), it's a function expression
           var match = /function\([ ]*\)[ ]*\{(.*)\}[ ]*$/g.exec(slot);
           if (match) {
-            // func = Function('with(this) {' + match[1] + '}').bind(data);
-            func = (data) => { return data[match[1]]; };
+            func = Function('with(this) {' + match[1] + '}').bind(data);
           } else if (/\breturn [^;]+;?[ ]*$/.test(slot) && /return[^}]*$/.test(slot)) {
             // Function expression with explicit 'return' expression
-            // func = Function('with(this) {' + slot + '}').bind(data);
-            func = (data) => { return data[slot]; };
+            func = Function('with(this) {' + slot + '}').bind(data);
           } else {
             // Function expression with explicit 'return' expression
             // Ordinary simple expression that
-            // func = Function('with(this) {return (' + slot + ')}').bind(data);
-            func = (data) => { return data[slot]; };
+            func = Function('with(this) {return (' + slot + ')}').bind(data);
           }
-          var evaluated = func(data);
+          var evaluated = func();
           delete data.$root;  // remove $root now that the parsing is over
           if (evaluated) {
             // In case of primitive types such as String, need to call valueOf() to get the actual value instead of the promoted object
@@ -630,14 +627,14 @@
     $selected: [],
     $injected: [],
     $progress: null,
-    exec: function (current, path, filter) {
+    exec: function(current, path, filter) {
       // if current matches the pattern, put it in the selected array
       if (typeof current === 'string') {
         // leaf node should be ignored
         // we're lookin for keys only
       } else if (Helper.is_array(current)) {
-        for (var i = 0; i < current.length; i++) {
-          SELECT.exec(current[i], path + '[' + i + ']', filter);
+        for (var i=0; i<current.length; i++) {
+          SELECT.exec(current[i], path+'['+i+']', filter);
         }
       } else {
         // object
@@ -655,12 +652,12 @@
                 value: current[key],
               });
             }
-            SELECT.exec(current[key], path + '["' + key + '"]', filter);
+            SELECT.exec(current[key], path+'["'+key+'"]', filter);
           }
         }
       }
     },
-    inject: function (obj, serialized) {
+    inject: function(obj, serialized) {
       SELECT.$injected = obj;
       try {
         if (serialized) SELECT.$injected = JSON.parse(obj);
@@ -672,7 +669,7 @@
       return SELECT;
     },
     // returns the object itself
-    select: function (obj, filter, serialized) {
+    select: function(obj, filter, serialized) {
       // iterate '$selected'
       //
       /*
@@ -712,8 +709,8 @@
             SELECT.$selected_root = {};
           }
         }
-        Object.keys(json).forEach(function (key) {
-          //for (var key in json) {
+        Object.keys(json).forEach(function(key) {
+        //for (var key in json) {
           SELECT.$val[key] = json[key];
           SELECT.$selected_root[key] = json[key];
         });
@@ -725,7 +722,7 @@
 
       return SELECT;
     },
-    transformWith: function (obj, serialized) {
+    transformWith: function(obj, serialized) {
       SELECT.$parsed = [];
       SELECT.$progress = null;
       /*
@@ -752,12 +749,12 @@
       root = SELECT.$selected_root;
       // generate new $selected_root
       if (SELECT.$selected && SELECT.$selected.length > 0) {
-        SELECT.$selected.sort(function (a, b) {
+        SELECT.$selected.sort(function(a, b) {
           // sort by path length, so that deeper level items will be replaced first
           // TODO: may need to look into edge cases
           return b.path.length - a.path.length;
-        }).forEach(function (selection) {
-          //SELECT.$selected.forEach(function(selection) {
+        }).forEach(function(selection) {
+        //SELECT.$selected.forEach(function(selection) {
           // parse selected
           var parsed_object = TRANSFORM.run(template, selection.object);
 
@@ -767,7 +764,7 @@
           // update selected object with the parsed result
           selection.object = parsed_object;
         });
-        SELECT.$selected.sort(function (a, b) {
+        SELECT.$selected.sort(function(a, b) {
           return a.index - b.index;
         });
       } else {
@@ -782,7 +779,7 @@
       delete Boolean.prototype.$root;
       return SELECT;
     },
-    transform: function (obj, serialized) {
+    transform: function(obj, serialized) {
       SELECT.$parsed = [];
       SELECT.$progress = null;
       /*
@@ -811,11 +808,11 @@
       root = data;
 
       if (SELECT.$selected && SELECT.$selected.length > 0) {
-        SELECT.$selected.sort(function (a, b) {
+        SELECT.$selected.sort(function(a, b) {
           // sort by path length, so that deeper level items will be replaced first
           // TODO: may need to look into edge cases
           return b.path.length - a.path.length;
-        }).forEach(function (selection) {
+        }).forEach(function(selection) {
           // parse selected
           var parsed_object = TRANSFORM.run(selection.object, data);
           // apply the result to root
@@ -825,7 +822,7 @@
           // update selected object with the parsed result
           selection.object = parsed_object;
         });
-        SELECT.$selected.sort(function (a, b) {
+        SELECT.$selected.sort(function(a, b) {
           return a.index - b.index;
         });
       } else {
@@ -843,53 +840,53 @@
     },
 
     // Terminal methods
-    objects: function () {
+    objects: function() {
       SELECT.$progress = null;
       if (SELECT.$selected) {
-        return SELECT.$selected.map(function (item) { return item.object; });
+        return SELECT.$selected.map(function(item) { return item.object; });
       } else {
         return [SELECT.$selected_root];
       }
     },
-    keys: function () {
+    keys: function() {
       SELECT.$progress = null;
       if (SELECT.$selected) {
-        return SELECT.$selected.map(function (item) { return item.key; });
+        return SELECT.$selected.map(function(item) { return item.key; });
       } else {
         if (Array.isArray(SELECT.$selected_root)) {
-          return Object.keys(SELECT.$selected_root).map(function (key) { return parseInt(key); });
+          return Object.keys(SELECT.$selected_root).map(function(key) { return parseInt(key); });
         } else {
           return Object.keys(SELECT.$selected_root);
         }
       }
     },
-    paths: function () {
+    paths: function() {
       SELECT.$progress = null;
       if (SELECT.$selected) {
-        return SELECT.$selected.map(function (item) { return item.path; });
+        return SELECT.$selected.map(function(item) { return item.path; });
       } else {
         if (Array.isArray(SELECT.$selected_root)) {
-          return Object.keys(SELECT.$selected_root).map(function (item) {
+          return Object.keys(SELECT.$selected_root).map(function(item) {
             // key is integer
             return '[' + item + ']';
           });
         } else {
-          return Object.keys(SELECT.$selected_root).map(function (item) {
+          return Object.keys(SELECT.$selected_root).map(function(item) {
             // key is string
             return '["' + item + '"]';
           });
         }
       }
     },
-    values: function () {
+    values: function() {
       SELECT.$progress = null;
       if (SELECT.$selected) {
-        return SELECT.$selected.map(function (item) { return item.value; });
+        return SELECT.$selected.map(function(item) { return item.value; });
       } else {
         return Object.values(SELECT.$selected_root);
       }
     },
-    root: function () {
+    root: function() {
       SELECT.$progress = null;
       return SELECT.$selected_root;
     },
@@ -897,13 +894,13 @@
 
   // Native JSON object override
   var _stringify = JSON.stringify;
-  JSON.stringify = function (val, replacer, spaces) {
+  JSON.stringify = function(val, replacer, spaces) {
     var t = typeof val;
     if (['number', 'string', 'boolean'].indexOf(t) !== -1) {
       return _stringify(val, replacer, spaces);
     }
     if (!replacer) {
-      return _stringify(val, function (key, val) {
+      return _stringify(val, function(key, val) {
         if (SELECT.$injected && SELECT.$injected.length > 0 && SELECT.$injected.indexOf(key) !== -1) { return undefined; }
         if (key === '$root' || key === '$index') {
           return undefined;
