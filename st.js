@@ -562,7 +562,7 @@
             // func = Function('with(this) {return (' + slot + ')}').bind(data);
             func = (data) => { return data[slot]; };
           }
-          var evaluated = func();
+          var evaluated = func(data);
           delete data.$root;  // remove $root now that the parsing is over
           if (evaluated) {
             // In case of primitive types such as String, need to call valueOf() to get the actual value instead of the promoted object
