@@ -550,16 +550,19 @@
           // If the pattern ends with a return statement, but is NOT wrapped inside another function ([^}]*$), it's a function expression
           var match = /function\([ ]*\)[ ]*\{(.*)\}[ ]*$/g.exec(slot);
           if (match) {
-            func = Function('with(this) {' + match[1] + '}').bind(data);
+            //func = Function('with(this) {' + match[1] + '}').bind(data);
+            func = (data) => { return data[match[1]]; };
           } else if (/\breturn [^;]+;?[ ]*$/.test(slot) && /return[^}]*$/.test(slot)) {
             // Function expression with explicit 'return' expression
-            func = Function('with(this) {' + slot + '}').bind(data);
+            // func = Function('with(this) {' + slot + '}').bind(data);
+            func = (data) => { return data[slot]; };
           } else {
             // Function expression with explicit 'return' expression
             // Ordinary simple expression that
-            func = Function('with(this) {return (' + slot + ')}').bind(data);
+            // func = Function('with(this) {return (' + slot + ')}').bind(data);
+            func = (data) => { return data[slot]; };
           }
-          var evaluated = func();
+          var evaluated = func(data);
           delete data.$root;  // remove $root now that the parsing is over
           if (evaluated) {
             // In case of primitive types such as String, need to call valueOf() to get the actual value instead of the promoted object
